@@ -1,0 +1,48 @@
+{
+    "scopeName": "source.spec",
+    "patterns": [
+        { "include": "#expression" },
+        { "include": "#comment" }
+    ],
+    "repository": {
+        "comment": {
+            "patterns": [{
+                "include": "#comment-block"
+            }]
+        },
+        "comment-block": {
+            "begin": "\\/\\*",
+            "end": "\\*\\/",
+            "name": "comment.block",
+            "beginCaptures": {
+                "0": { "name": "comment.block.open" }
+            },
+            "endCaptures": {
+                "0": { "name": "comment.block.close" }
+            }
+        },
+        "expression": {
+            "patterns": [{
+                "include": "#letter"
+            }, {
+                "include": "#paren-expression"
+            }]
+        },
+        "letter": {
+            "match": "a|b|c",
+            "name": "keyword.letter"
+        },
+        "paren-expression": {
+            "begin": "\\(",
+            "end": "\\)",
+            "beginCaptures": {
+                "0": { "name": "punctuation.paren.open" }
+            },
+            "endCaptures": {
+                "0": { "name": "punctuation.paren.close" }
+            },
+            "name": "expression.group",
+            "patterns": [{ "include": "#expression" }]
+        }
+    }
+}
