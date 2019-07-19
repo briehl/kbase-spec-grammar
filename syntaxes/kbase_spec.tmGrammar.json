@@ -2,7 +2,15 @@
     "scopeName": "source.spec",
     "patterns": [
         { "include": "#expression" },
-        { "include": "#comment" }
+        { "include": "#comment" },
+        {
+            "name": "keyword.funcdef",
+            "match": "funcdef"
+        },
+        {
+            "name": "keyword.typedef",
+            "match": "typedef"
+        }
     ],
     "repository": {
         "comment": {
