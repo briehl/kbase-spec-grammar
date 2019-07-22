@@ -1,29 +1,185 @@
 {
     "scopeName": "source.spec",
     "patterns": [
-        { "include": "#expression" },
+        { "include": "#module" },
         { "include": "#comment" },
-        { "include": "#statement" },
-        {
-            "name": "keyword.control.typedef.kbase",
-            "match": "typedef"
-        },
-        {
-            "include": "#returns"
-        }
+        { "include": "#statement" }
     ],
     "repository": {
         "statement": {
             "patterns": [
                 {
                     "include": "#function-declaration"
+                },
+                {
+                    "include": "#type-mapping-declaration"
+                },
+                {
+                    "include": "#type-tuple-declaration"
+                },
+                {
+                    "include": "#type-list-declaration"
+                },
+                {
+                    "include": "#type-atom-declaration"
+                },
+                {
+                    "include": "#type-structure-declaration"
                 }
             ]
         },
+        "type-structure-declaration": {
+            "begin": "(typedef)\\s+(structure)\\s+(\\{)\\s*",
+            "end": "(\\})\\s+([a-zA-Z][\\w-]*);",
+            "beginCaptures": {
+                "1": { "name": "keyword.control.typedef.kbase" },
+                "2": { "name": "entity.name.type.structure.kbase" },
+                "3": { "name": "support.name.tag.structure.begin.kbase"}
+            },
+            "endCaptures": {
+                "1": { "name": "support.name.tag.structure.begin.kbase"},
+                "2": { "name": "variable.parameter.name.kbase" }
+            },
+            "patterns": [
+                {
+                    "include": "#typedef-struct-atom"
+                },
+                {
+                    "include": "#typedef-struct-list"
+                },
+                {
+                    "include": "#typedef-struct-tuple"
+                },
+                {
+                    "include": "#typedef-struct-mapping"
+                }
+            ]
+        },
+        "typedef-struct-atom" : {
+            "match": "([a-zA-Z][\\w-]*)\\s+([a-zA-Z][\\w-]*);",
+            "captures": {
+                "1": { "name": "entity.name.type.structelem.kbase" },
+                "2": { "name": "variable.parameter.name.kbase" }
+            }
+        },
+        "typedef-struct-list" : {
+            "match": "(list)\\s*(<)\\s*([a-zA-Z][\\w-]*)\\s*(>)\\s*([a-zA-Z][\\w-]*)\\s*;",
+            "captures": {
+                "1": { "name": "entity.name.type.structelem.kbase" },
+                "2": { "name": "support.name.tag.list.begin.kbase"},
+                "3": { "name": "storage.type.list.kbase" },
+                "4": { "name": "support.name.tag.list.end.kbase" },
+                "5": { "name": "variable.parameter.name.kbase" }
+            }
+        },
+        "typedef-struct-tuple" : {
+            "begin": "(tuple)\\s*",
+            "end": "\\s*([a-zA-Z][\\w-]*)\\s*;",
+            "beginCaptures": {
+                "1": { "name": "entity.name.type.structelem.kbase" }
+            },
+            "endCaptures": {
+                "1": { "name": "variable.parameter.name.kbase"}
+            },
+            "patterns": [
+                {
+                    "include": "#def-tuple"
+                }
+            ]
+        },
+        "type-atom-declaration": {
+            "begin": "^\\s*(typedef)\\s+(string|int|float)\\s+",
+            "end": ";",
+            "beginCaptures": {
+                "1": { "name": "keyword.control.typedef.kbase" },
+                "2": { "name": "entity.name.type.atom.kbase" }
+            },
+            "patterns": [
+                {
+                    "include": "#typedef-name"
+                }
+            ]
+        },
+        "typedef-name": {
+            "match": "[a-zA-Z][\\w-]*",
+            "name": "variable.parameter.name.kbase"
+        },
+        "type-mapping-declaration": {
+            "begin": "^\\s*(typedef)\\s+(mapping)\\s*",
+            "end": "\\s*([a-zA-Z][\\w-]*)\\s*;",
+            "beginCaptures": {
+                "1": { "name": "keyword.control.typedef.kbase" },
+                "2": { "name": "entity.name.type.mapping.kbase" }
+            },
+            "endCaptures": {
+                "1": { "name": "variable.parameter.name.kbase"}
+            },
+            "patterns": [
+                {
+                    "include": "#def-mapping"
+                }
+            ]
+        },
+        "type-tuple-declaration": {
+            "begin": "^\\s*(typedef)\\s+(tuple)\\s*",
+            "end": "\\s*([a-zA-Z][\\w-]*)\\s*;",
+            "beginCaptures": {
+                "1": { "name": "keyword.control.typedef.kbase" },
+                "2": { "name": "entity.name.type.tuple.kbase" }
+            },
+            "endCaptures": {
+                "1": { "name": "variable.parameter.name.kbase"}
+            },
+            "patterns": [
+                {
+                    "include": "#def-tuple"
+                }
+            ]
+        },
+        "type-list-declaration": {
+            "match": "\\s*(typedef)\\s+(list)\\s*(<)\\s*([a-zA-Z][\\w-]*)\\s*(>)\\s*([a-zA-Z][\\w-]*)\\s*;",
+            "captures": {
+                "1": { "name": "keyword.control.typedef.kbase" },
+                "2": { "name": "entity.name.type.list.kbase" },
+                "3": { "name": "support.name.tag.list.begin.kbase"},
+                "4": { "name": "storage.type.list.kbase" },
+                "5": { "name": "support.name.tag.list.end.kbase" },
+                "6": { "name": "variable.parameter.name.kbase" }
+            }
+        },
+        "def-mapping": {
+            "match": "\\s*(<)\\s*([a-zA-Z][\\w-]*)\\s*,\\s*([a-zA-Z][\\w-]*)\\s*(>)\\s*",
+            "captures": {
+                "1": { "name": "support.name.tag.mapping.begin.kbase" },
+                "2": { "name": "storage.type.mapping.key.kbase" },
+                "3": { "name": "storage.type.mapping.value.kbase" },
+                "4": { "name": "support.name.tag.mapping.end.kbase" }
+            }
+        },
+        "def-tuple": {
+            "begin": "\\s*(<)",
+            "end": "\\s*(>)",
+            "beginCaptures": {
+                "1": { "name": "support.name.tag.tuple.begin.kbase" }
+            },
+            "endCaptures": {
+                "1": { "name": "support.name.tag.tuple.end.kbase" }
+            },
+            "patterns": [
+                {
+                    "include": "#tuple-elems"
+                }
+            ]
+        },
+        "tuple-elems": {
+            "match": "[a-zA-Z][\\w-]*(\\s+[a-zA-Z][\\w-]*)",
+            "name": "storage.type.tuple.elem.kbase"
+        },
+
         "function-declaration": {
             "name": "meta.function.kbase",
             "begin": "\\s*(funcdef)\\s+([^\\s\\(]+)\\s*",
-            "end": ";",
+            "end": "((authentication)\\s+(required|none)\\s*)?;",
             "beginCaptures": {
                 "0": {
                     "name": "keyword.control.funcdef.kbase"
@@ -32,9 +188,18 @@
                     "name": "storage.type.function.kbase"
                 }
             },
-            "includes": [
-                "#parameters",
-                "#returns"
+            "endCaptures": {
+                "0": {
+                    "name": "support.type.auth.kbase"
+                }
+            },
+            "patterns": [
+                {
+                    "include": "#parameters"
+                },
+                {
+                    "include": "#returns"
+                }
             ]
         },
         "parameters": {
@@ -50,11 +215,20 @@
                 "1": {
                     "name": "punctuation.definition.parameters.end.kbase"
                 }
-            }
+            },
+            "patterns": [
+                {
+                    "include": "#single-param"
+                }
+            ]
+        },
+        "single-param": {
+            "name": "variable.parameter.unnamed.kbase",
+            "match": "\\b[[:alpha:]][[:alnum:]_\\-]*\\b"
         },
         "returns": {
             "name": "keyword.control.flow.kbase",
-            "match": "returns"
+            "match": "\\breturns\\b"
         },
         "comment": {
             "patterns": [{
@@ -72,28 +246,13 @@
                 "0": { "name": "comment.block.close" }
             }
         },
-        "expression": {
-            "patterns": [{
-                "include": "#letter"
-            }, {
-                "include": "#paren-expression"
-            }]
-        },
-        "letter": {
-            "match": "a|b|c",
-            "name": "keyword.letter"
-        },
-        "paren-expression": {
-            "begin": "\\(",
-            "end": "\\)",
+        "module": {
+            "begin": "^\\s*(module)\\s*([[:alpha:]][[:alnum:]_\\-]*)",
+            "end": "\\s*{",
             "beginCaptures": {
-                "0": { "name": "punctuation.paren.open" }
-            },
-            "endCaptures": {
-                "0": { "name": "punctuation.paren.close" }
-            },
-            "name": "expression.group",
-            "patterns": [{ "include": "#expression" }]
+                "1": { "name": "support.class.kbase.module" },
+                "2": { "name": "storage.type.kbase.modulename" }
+            }
         }
     }
 }
