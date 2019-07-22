@@ -23,7 +23,9 @@
 		"languages": [
 			{
 				"id": "kbase_spec",
-				"extensions": [".spec"]
+				"extensions": [
+					".spec"
+				]
 			}
 		],
 		"grammars": [

@@ -3,16 +3,51 @@
     "patterns": [
         { "include": "#expression" },
         { "include": "#comment" },
+        { "include": "#statement" },
         {
-            "name": "keyword.funcdef",
-            "match": "funcdef"
-        },
-        {
-            "name": "keyword.typedef",
+            "name": "keyword.control.typedef.kbase",
             "match": "typedef"
         }
     ],
     "repository": {
+        "statement": {
+            "patterns": [
+                {
+                    "include": "#function-declaration"
+                }
+            ]
+        },
+        "function-declaration": {
+            "name": "meta.function.kbase",
+            "begin": "\\s*(funcdef)\\s+([^\\s\\(]+)\\s*",
+            "end": ";",
+            "beginCaptures": {
+                "0": {
+                    "name": "keyword.control.funcdef.kbase"
+                },
+                "1": {
+                    "name": "storage.type.function.kbase"
+                }
+            },
+            "includes": [
+                "#parameters"
+            ]
+        },
+        "parameters": {
+            "name": "meta.function.parameters.kbase",
+            "begin": "(\\()",
+            "end": "(\\))",
+            "beginCaptures": {
+                "1": {
+                    "name": "punctuation.definition.parameters.begin.kbase"
+                }
+            },
+            "endCaptures": {
+                "1": {
+                    "name": "punctuation.definition.parameters.end.kbase"
+                }
+            }
+        },
         "comment": {
             "patterns": [{
                 "include": "#comment-block"
